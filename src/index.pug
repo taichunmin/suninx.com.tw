@@ -1,0 +1,49 @@
+extends /layout/default
+
+block style
+  style
+    :sass
+      .font-size-sm
+        font-size: 80%
+
+block content
+  .container
+    .jumbotron.mt-3
+      h1.display-4= title
+      p.lead= description
+      a.btn.btn-primary.btn-lg(href=`${baseurl}products.html`) 產品資訊 #[i.fa.fa-fw.fa-arrow-right]
+    .card-deck
+      .card
+        h6.card-header #[i.fa.fa-fw.fa-list] 服務項目
+        ul.list-group.list-group-flush
+          li.list-group-item.d-flex.flex-column
+            h5 CKD 空壓元件
+            small.text-muted CKD 電磁閥、CKD 調壓閥
+          li.list-group-item.d-flex.flex-column
+            h5 CKD 流量控制
+            small.text-muted 流量感測器、CKD 流量計
+          li.list-group-item.d-flex.flex-column
+            h5 CKD 氣動元件
+            small.text-muted 氣壓缸、夾爪、三點組合、接頭、調速閥
+      .card
+        h6.card-header #[i.fa.fa-fw.fa-phone] 聯絡資訊
+        .card-body
+          table.table.table-sm.table-borderless.mb-0
+            tr
+              td: small.text-nowrap.text-muted 電話
+              td.text-right: a(href="tel:0424639790") 04-24639790
+            tr
+              td: small.text-nowrap.text-muted 傳真
+              td.text-right: a(href="tel:0424634790") 04-24634790
+            tr
+              td: small.text-nowrap.text-muted LINE
+              td.text-right: a(target="_blank", href="https://line.me/R/ti/p/@278nqdzl") @278nqdzl
+            tr
+              td: small.text-nowrap.text-muted E-mail
+              td.text-right: a(href="mailto:suninx@hotmail.com") suninx@hotmail.com
+            tr
+              td: small.text-nowrap.text-muted 地址
+              td.text-right: small 407005 台中市西屯區永福路 42 號 2 樓
+      .card
+        h6.card-header #[i.fa.fa-fw.fa-map] 地圖導航
+        iframe(style="border: 0; height: 100%; width: 100%; min-height: 250px", loading="lazy", allowfullscreen, src="https://lihi1.com/OI2lw/place_id:Ej5Oby4gNDIsIFlvbmdmdSBSb2FkLCBYaXR1biBEaXN0cmljdCwgVGFpY2h1bmcgQ2l0eSwgVGFpd2FuIDQwNyJQEk4KNAoyCdvTs1gHFmk0EQ_VoFJVpVxYGh4LEO7B7qEBGhQKEgmfFyncBRZpNBHc6GD4DSTh-QwQKioUChIJX7nEZAcWaTQRCoXWcp3gfhc")
