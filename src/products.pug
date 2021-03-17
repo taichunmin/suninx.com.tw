@@ -1,5 +1,25 @@
 extends /layout/default
 
 block content
-  .container
-    h2.text-center 產品資訊
+  .container-fluid
+    h1.text-center 產品資訊
+    .card
+      .card-body.d-flex.flex-column.flex-md-row
+        img.align-self-center.align-self-md-stretch(src="https://i.imgur.com/5Nu95Ni.jpg", style="width: 330px; height: 248px")
+        .ml-md-3.flex-fill.d-flex.flex-column
+          h3.product-name 空氣用壓力傳感器
+          .d-flex.align-items-center.mt-1
+            .mr-3.text-nowrap 分類
+            .flex-fill.d-flex.align-items-center
+              span.badge.badge-primary.mr-2 輔助裝置
+              span.badge.badge-primary.mr-2 傳感器
+          .d-flex.align-items-center.mt-1
+            .mr-3.text-nowrap 型號
+            .flex-fill.d-flex.align-items-center
+              span.badge.badge-success.mr-2 PPG
+          .d-flex.align-items-center.mt-1
+            .mr-3.text-nowrap 系列
+            .flex-fill.d-flex.align-items-center
+              span.badge.badge-info.mr-2 PPG-C
+              span.badge.badge-info.mr-2 PPG-D
+          p.mt-3 Φ31mm的緊湊型單畫面雙色顯示壓力開關。符合防護等級IP65。（配管形式：增加了內螺紋）
