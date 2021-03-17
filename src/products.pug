@@ -1,5 +1,11 @@
 extends /layout/default
 
+block style
+  style
+    :sass
+      summary:focus
+        outline: unset
+
 block content
   .container-fluid
     h1.text-center 產品資訊
@@ -22,4 +28,10 @@ block content
             .flex-fill.d-flex.align-items-center
               span.badge.badge-info.mr-2 PPG-C
               span.badge.badge-info.mr-2 PPG-D
-          p.mt-3 Φ31mm的緊湊型單畫面雙色顯示壓力開關。符合防護等級IP65。（配管形式：增加了內螺紋）
+          p.mt-3.mb-auto Ø31mm的緊湊型單畫面雙色顯示壓力開關。符合防護等級IP65。（配管形式：增加了內螺紋）
+          details.mt-3
+            summary 檔案下載 (3)
+            ol
+              li: a(target="_blank", href="https://suninx.com.tw/products_detail.php?id=5969&download=1") 型錄
+              li: a(target="_blank", href="https://suninx.com.tw/upload/suninx/files/%E3%80%90NEW%E3%80%91PPG-D%E7%B3%BB%E5%88%97(1MB).pdf") 【NEW】PPG-D系列(1MB).pdf
+              li: a(target="_blank", href="https://suninx.com.tw/upload/suninx/files/PPG-C%E7%B3%BB%E5%88%97.pdf") PPG-C系列.pdf
