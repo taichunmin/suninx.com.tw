@@ -1,0 +1,64 @@
+extends /layout/default
+
+block beforehtml
+  - title = 'CKD 爬蟲'
+
+block style
+  style
+    :sass
+      [v-cloak]
+        display: none
+      body, .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6
+        font-family: 'Noto Sans TC', sans-serif
+
+block content
+  #app.my-3.container-fluid(v-cloak)
+    h2.mb-3.text-center CKD 爬蟲
+    .text-monospace
+      textarea.form-control.form-control-sm(rows="15", v-model="output")
+    .row.mx-n2.mt-3
+      button.btn.btn-info.mx-2.my-1(type="button", @click="btnFetchTags") 抓取產品分類
+
+block script
+  script.
+    window.vm = new Vue({
+      el: '#app',
+      data: {
+        output: '',
+      },
+      methods: {
+        tsvUnparse (rows) {
+          return Papa.unparse(rows, {
+            headers: true,
+            delimiter: '\t',
+          })
+        },
+        async fetchTags () {
+          const tagFlattenRecursive = (nodes, depth = 1) => _.flatten(_.map(nodes, node => [
+            {
+              depth,
+              id: node.tag_id,
+              img: `https://www.ckd.co.jp/kiki/src/tags/${node.tag_img}`,
+              name: node.tag_name,
+              url: `https://www.ckd.co.jp/kiki/sc/product/list?cid=${node.tag_id}&sid=0`
+            },
+            ...(_.isArray(node.childs) ? tagFlattenRecursive(node.childs, depth + 1) : []),
+          ]))
+
+          const tags = _.get(await axios.get('https://us-central1-taichunmin.cloudfunctions.net/cors-anywhere', {
+            params: { u: 'https://www.ckd.co.jp/kiki/sc/product/data/category' }
+          }), 'data.list')
+          return _.sortBy(tagFlattenRecursive(tags), ['depth', 'id'])
+        },
+        async btnFetchTags () {
+          try {
+            const tags = await this.fetchTags()
+            this.output = this.tsvUnparse(tags)
+            await Swal.fire({ icon: 'success', title: '抓取成功', text: `總共抓到 ${tags.length} 筆資料` })
+          } catch (err) {
+            console.error(err)
+            await Swal.fire({ icon: 'error', title: '抓取失敗', text: err.message })
+          }
+        },
+      },
+    })
