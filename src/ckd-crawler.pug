@@ -79,9 +79,10 @@ block script
               img: domAttr(item, '.summary img', 'src'),
               model: domAttr(item, 'dd.font24'),
               name: domAttr(item, 'h1'),
-              summary: domAttr(item, '.summary p'),
-              tag2: domAttr(item, 'p.green01'),
               note: domAttr(item, '.supp'),
+              summary: domAttr(item, '.summary p'),
+              tagId: cid,
+              tagName: domAttr(item, 'p.green01'),
             })).value()
           ctx.next = _.get(domAttr(div, 'li.next>a', 'href').match(/p=(\d+)/), '1')
           return ctx
