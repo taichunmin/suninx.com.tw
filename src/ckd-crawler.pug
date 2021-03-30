@@ -16,14 +16,19 @@ block content
     h2.mb-3.text-center CKD 爬蟲
     .text-monospace
       textarea.form-control.form-control-sm(rows="15", v-model="output")
-    .row.mx-n2.mt-3
-      button.btn.btn-info.mx-2.my-1(type="button", @click="btnFetchTags") 抓取產品分類
+    .d-flex.mx-n2.mt-3
+      button.text-nowrap.btn.btn-info.mx-2.my-1(type="button", @click="btnFetchTags") 抓取產品分類
+      .input-group.mx-2.my-1
+        input.form-control(placeholder="cid", style="max-width: 100px", v-model="fetchItemsCid")
+        .input-group-append: button.btn.btn-info(type="button", @click="btnFetchItemsByCid") 抓取分類下的產品
 
 block script
   script.
+    window.sleep = t => new Promise(resolve => { setTimeout(resolve, t) })
     window.vm = new Vue({
       el: '#app',
       data: {
+        fetchItemsCid: '',
         output: '',
       },
       methods: {
@@ -52,6 +57,7 @@ block script
         },
         async btnFetchTags () {
           try {
+            this.showLoading('請稍候', '抓取資料中')
             const tags = await this.fetchTags()
             this.output = this.tsvUnparse(tags)
             await Swal.fire({ icon: 'success', title: '抓取成功', text: `總共抓到 ${tags.length} 筆資料` })
@@ -59,6 +65,54 @@ block script
             console.error(err)
             await Swal.fire({ icon: 'error', title: '抓取失敗', text: err.message })
           }
+        },
+        async fetchItemsByCidPage (cid, page = 1) {
+          const ctx = {}
+          const div = document.createElement('div')
+          const domAttr = (dom, selector, attr = 'innerText') => _.trim(_.get(dom.querySelector(selector), attr))
+          div.innerHTML = _.get(await axios.get('https://us-central1-taichunmin.cloudfunctions.net/cors-anywhere', {
+            params: { u: `https://www.ckd.co.jp/kiki/sc/product/list?sid=0&cid=${cid}&p=${page}` }
+          }), 'data')
+          ctx.items = _.chain(div.querySelectorAll('section.item'))
+            .map(item => ({
+              id: _.get(domAttr(item, 'a.detail', 'href').match(/detail\/(\d+)/), '1'),
+              img: domAttr(item, '.summary img', 'src'),
+              model: domAttr(item, 'dd.font24'),
+              name: domAttr(item, 'h1'),
+              summary: domAttr(item, '.summary p'),
+              tag2: domAttr(item, 'p.green01'),
+              note: domAttr(item, '.supp'),
+            })).value()
+          ctx.next = _.get(domAttr(div, 'li.next>a', 'href').match(/p=(\d+)/), '1')
+          return ctx
+        },
+        async btnFetchItemsByCid () {
+          try {
+            this.showLoading('請稍候', '抓取資料中')
+            const items = []
+            const cid = this.fetchItemsCid
+            let ctx
+            do {
+              if (ctx) await window.sleep(100)
+              ctx = await this.fetchItemsByCidPage(cid, _.get(ctx, 'next', '1'))
+              items.push(...ctx.items)
+              this.showLoading('請稍候', `已抓取 ${items.length} 筆資料`)
+            } while (ctx.next);
+            this.output = this.tsvUnparse(items)
+            await Swal.fire({ icon: 'success', title: '抓取成功', text: `總共抓到 ${items.length} 筆資料` })
+          } catch (err) {
+            console.error(err)
+            await Swal.fire({ icon: 'error', title: '抓取失敗', text: err.message })
+          }
+        },
+        showLoading (title, text) {
+          Swal.fire({
+            title,
+            text,
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => { Swal.showLoading() },
+          })
         },
       },
     })
