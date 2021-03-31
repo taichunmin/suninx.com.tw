@@ -15,7 +15,7 @@ block content
   #app.my-3.container-fluid(v-cloak)
     h2.mb-3.text-center CKD 爬蟲
     .text-monospace
-      textarea.form-control.form-control-sm(rows="15", v-model="output")
+      textarea.form-control.form-control-sm(rows="15", spellcheck="false", v-model="output")
     .d-flex.mx-n2.mt-3
       button.text-nowrap.btn.btn-info.mx-2.my-1(type="button", @click="btnFetchTags") 抓取產品分類
       .input-group.mx-2.my-1
